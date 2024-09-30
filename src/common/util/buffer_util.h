@@ -12,7 +12,7 @@
 #include <string>
 
 namespace aimrt::common::util {
-
+// cqmark 操作字符，将一个uint64_t转变为一个char数组
 // Store the uin64_t type as a small terminal in buf
 inline void SetBufFromUint64(char *p, uint64_t n) {
   p[0] = (char)(n & 0xFF);
