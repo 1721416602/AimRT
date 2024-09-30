@@ -12,8 +12,6 @@
 #include <string>
 
 namespace aimrt::common::util {
-// cqmark 操作字符，将一个uint64_t转变为一个char数组
-// Store the uin64_t type as a small terminal in buf
 inline void SetBufFromUint64(char *p, uint64_t n) {
   p[0] = (char)(n & 0xFF);
   p[1] = (char)((n >> 8) & 0xFF);
@@ -24,8 +22,6 @@ inline void SetBufFromUint64(char *p, uint64_t n) {
   p[6] = (char)((n >> 48) & 0xFF);
   p[7] = (char)((n >> 56) & 0xFF);
 }
-
-// Retrieve the uin64_t type from buf in the form of a small terminal
 inline uint64_t GetUint64FromBuf(const char *p) {
   return (uint64_t)((uint8_t)(p[0])) +
          ((uint64_t)((uint8_t)(p[1])) << 8) +
@@ -37,7 +33,8 @@ inline uint64_t GetUint64FromBuf(const char *p) {
          ((uint64_t)((uint8_t)(p[7])) << 56);
 }
 
-// Store the uint32_t type as a small terminal in buf
+// cqmark 小端模式下直接拷贝，大端模式需要逐字节转
+// cqquest 为什么64位不区分大小端？
 inline void SetBufFromUint32(char *p, uint32_t n) {
   if constexpr (std::endian::native == std::endian::little) {
     memcpy(p, &n, 4);
@@ -49,7 +46,7 @@ inline void SetBufFromUint32(char *p, uint32_t n) {
   }
 }
 
-// Retrieve the uint32_t type from buf in the form of a small terminal
+// cqmark 将一个char数组按uint32读取
 inline uint32_t GetUint32FromBuf(const char *p) {
   if constexpr (std::endian::native == std::endian::little) {
     return *((uint32_t *)p);
@@ -87,7 +84,9 @@ enum class BufferLenType : size_t {
   kUInt32 = 4,
   kUInt64 = 8
 };
-
+/*cqmark 字节操作类，其中【【unlikely】】告诉编译器，这个分支不太可能进去，优化速度 
+std::span<const char> 表示可以访问这个字节，但是没有它的所有权
+*/
 class BufferOperator {
  public:
   BufferOperator(char *ptr, size_t len)
@@ -185,7 +184,7 @@ class BufferOperator {
   char *end_;
   char *cur_;
 };
-
+//cqmark 获取字符类
 class ConstBufferOperator {
  public:
   ConstBufferOperator(const char *ptr, size_t len)

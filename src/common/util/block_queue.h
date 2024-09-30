@@ -10,7 +10,7 @@
 #include <stdexcept>
 
 namespace aimrt::common::util {
-
+// cqmark 继承自std::runtime_error方便抛出异常
 class BlockQueueStoppedException : public std::runtime_error {
  public:
   BlockQueueStoppedException() : std::runtime_error("BlockQueue is stopped") {}
@@ -24,16 +24,25 @@ class BlockQueue {
 
   BlockQueue(const BlockQueue &) = delete;
   BlockQueue &operator=(const BlockQueue &) = delete;
-
+  //cqmark 右值引用和const不兼容
   void Enqueue(const T &item) {
     std::unique_lock<std::mutex> lck(mutex_);
     if (!running_flag_) throw BlockQueueStoppedException();
     queue_.emplace(item);
     cond_.notify_one();
   }
+  // cqmark 不是完美转发，这样才是完美转发
+    // 使用模板参数 U 进行完美转发
+    // template<typename U>
+    // void Enqueue(U&& item) {
+    //     std::unique_lock<std::mutex> lck(mutex_);
+    //     if (!running_flag_) throw BockQueueStoppedException();
+    //     queue_.emplace(std::forward<U>(item)); // 完美转发
+    //     cond_.notify_one();
+    // }
 
   void Enqueue(T &&item) {
-    std::unique_lock<std::mutex> lck(mutex_);
+    std::unique_lock<std::mutex> lck(mlutex_);
     if (!running_flag_) throw BlockQueueStoppedException();
     queue_.emplace(std::move(item));
     cond_.notify_one();
