@@ -8,6 +8,8 @@
 
 namespace aimrt::common::util {
 
+//cqmark wait等待，notify通知解锁
+
 class LightSignal {
  public:
   LightSignal() = default;

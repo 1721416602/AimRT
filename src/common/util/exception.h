@@ -26,6 +26,13 @@ class AimRTException : public std::exception {
 
 }  // namespace aimrt::common::util
 
+//cqmark 如果没有 do { ... } while (0)，在宏中使用 if 语句时，如果宏后面跟着其他语句，可能会导致意想不到的行为。例如：
+// if (condition)
+//     AIMRT_ASSERT(expr, "Error message", arg);
+// else
+//     do_something();
+// ##可以用于连接两个字符串，也可以用于删除可变参数中的逗号（在没有参数的情况下）
+
 #define AIMRT_ASSERT(__expr__, __fmt__, ...)                                                  \
   do {                                                                                        \
     if (!(__expr__)) [[unlikely]] {                                                           \

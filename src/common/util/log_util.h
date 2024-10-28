@@ -182,7 +182,7 @@ inline void LogImpl(const Logger& logger,
 }
 
 }  // namespace aimrt::common::util
-
+//cqmark 记录日志
 /// Log with the specified logger handle
 #define AIMRT_HANDLE_LOG(__lgr__, __lvl__, __fmt__, ...)                                 \
   do {                                                                                   \
@@ -195,7 +195,7 @@ inline void LogImpl(const Logger& logger,
           __FUNCTION__, __log_str__.c_str(), __log_str__.size());                        \
     }                                                                                    \
   } while (0)
-
+//cqmark 判断条件后记录日志
 /// Check and log with the specified logger handle
 #define AIMRT_HANDLE_CHECK_LOG(__lgr__, __expr__, __lvl__, __fmt__, ...) \
   do {                                                                   \
@@ -204,6 +204,7 @@ inline void LogImpl(const Logger& logger,
     }                                                                    \
   } while (0)
 
+//cqmark 记录日志后抛出异常
 /// Log and throw with the specified logger handle
 #define AIMRT_HANDLE_LOG_THROW(__lgr__, __lvl__, __fmt__, ...)                           \
   do {                                                                                   \
@@ -217,7 +218,7 @@ inline void LogImpl(const Logger& logger,
     }                                                                                    \
     throw aimrt::common::util::AimRTException(std::move(__log_str__));                   \
   } while (0)
-
+//cqmark判断条件，记录日志后抛出异常
 /// Check and log and throw with the specified logger handle
 #define AIMRT_HANDLE_CHECK_LOG_THROW(__lgr__, __expr__, __lvl__, __fmt__, ...) \
   do {                                                                         \

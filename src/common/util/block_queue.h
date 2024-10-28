@@ -42,12 +42,13 @@ class BlockQueue {
     // }
 
   void Enqueue(T &&item) {
-    std::unique_lock<std::mutex> lck(mlutex_);
+    std::unique_lock<std::mutex> lck(mutex_);
     if (!running_flag_) throw BlockQueueStoppedException();
     queue_.emplace(std::move(item));
     cond_.notify_one();
   }
-
+  //cqmark wait函数调用的时候会释放锁，等待条件满足的时候再重新获得锁
+  //如果没有就等待，等到有了再出列
   T Dequeue() {
     std::unique_lock<std::mutex> lck(mutex_);
     cond_.wait(lck, [this] { return !queue_.empty() || !running_flag_; });
@@ -56,7 +57,7 @@ class BlockQueue {
     queue_.pop();
     return item;
   }
-
+  //cqmark 如果没有也不等待，直接返回nullptr
   std::optional<T> TryDequeue() {
     std::lock_guard<std::mutex> lck(mutex_);
     if (queue_.empty() || !running_flag_) [[unlikely]]

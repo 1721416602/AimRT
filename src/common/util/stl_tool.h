@@ -14,6 +14,8 @@
 
 namespace aimrt::common::util {
 
+
+//cqmark stl一些容器可能会用到的操作，比如判断两个容器里的数据是否相同，打印容器等
 template <typename T>
 concept IterableType =
     requires(T t, typename T::value_type v) {

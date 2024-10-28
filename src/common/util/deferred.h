@@ -16,6 +16,7 @@ class Deferred {
  public:
   Deferred() = default;
 
+//cqmark 确保当 F 不是 Deferred 类型时才允许调用这个构造函数。这避免了 Deferred 移动构造函数和这个模板构造函数发生冲突。
   template <class F>
     requires(!std::same_as<std::decay_t<F>, Deferred>)  // Avoid hide Deferred(Deferred&&)
   explicit Deferred(F&& f) : action_(std::forward<F>(f)) {}
@@ -28,6 +29,9 @@ class Deferred {
       action_();
     }
   }
+
+//cqmark !!用于确保表达式返回的是布尔值类型。
+//用法为Deferred a; if(a){}
 
   explicit operator bool() const noexcept { return !!action_; }
 

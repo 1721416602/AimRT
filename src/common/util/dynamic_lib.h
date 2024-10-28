@@ -12,9 +12,9 @@
 #else
   #include <dlfcn.h>
 #endif
-
+//cqmark 静态库加载完后删除静态库程序也能运行，动态库不行
 namespace aimrt::common::util {
-
+//cqmark 动态加载和卸载共享库
 class DynamicLib {
  public:
 #if defined(_WIN32)
